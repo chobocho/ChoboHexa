@@ -1,5 +1,5 @@
 # ChoboMemo
-![screen shot](https://github.com/chobocho/ChoboHexa/blob/master/ux/screenshot.png)
+![screen shot](https://github.com/chobocho/ChoboHexa/blob/master/ux/screenshot.jpg)
 
 ## History
 Date      |Description                     |Memo
