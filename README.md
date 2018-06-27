@@ -1,4 +1,4 @@
-# ChoboMemo
+# ChoboHexa
 ![screen shot](https://github.com/chobocho/ChoboHexa/blob/master/ux/screenshot.jpg)
 
 ## History
