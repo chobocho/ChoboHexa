@@ -29,6 +29,8 @@ public class HexaViewForN8 extends View  {
 
 	final int N8_width = 1080;
 	final int N8_height = 1920;
+	final int UPDATE_SCREEN = 1001;
+
 	private int screenWidth;
 	private int screenHeigth;
 	int gameSpeed;
@@ -45,7 +47,6 @@ public class HexaViewForN8 extends View  {
 		player.setHighScore(highScore);
 		playerAction.setPlayer(player);
 		playerDraw.setPlayer(player);
-
 
 		gameSpeed = 0;
 	}
@@ -67,14 +68,14 @@ public class HexaViewForN8 extends View  {
 			mHandler.removeMessages(0);
 			Log.d("Hexa", "Removed event");
 		}
-		if (player != null) {
+		if (player != null && player.isPlayState()) {
 			player.pause();
 		}
 	}
 
 	public void update() {
 		Log.d("Hexa", "View.update()");
-		invalidate();
+		mHandler.sendEmptyMessage(UPDATE_SCREEN);
 	}
 
 	public void startGame() {
@@ -83,8 +84,11 @@ public class HexaViewForN8 extends View  {
 
 	Handler mHandler = new Handler() {
 		public void handleMessage(Message msg) {
-			Log.d("Hexa", "There is event");
-			if (player != null && player.isPlayState()) {
+			Log.d("Hexa", "There is event : " + msg.what);
+			if (msg.what == UPDATE_SCREEN) {
+				invalidate();
+			}
+			else if (player != null && player.isPlayState()) {
 				player.moveDown();
 				gameSpeed = 800 - (player.getScore() / 30000);
 				mHandler.sendEmptyMessageDelayed(0, gameSpeed);

@@ -71,6 +71,7 @@ public class Hexa implements IHexa {
 
     public void moveDown() {
         if (gameState.gameOver()) {
+            gameState.fixCurrentBlock();
             setState(gameOverState);
         } else {
             gameState.moveDown();

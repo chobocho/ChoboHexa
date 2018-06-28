@@ -26,12 +26,12 @@ public abstract class HexaGameState {
         // TODO implement here
     }
 
-    public void fixCurrentBlock() {
-
-    }
-
     public void moveBottom() {
         // TODO implement here
+    }
+
+    public void fixCurrentBlock() {
+
     }
 
     public void updateBlock() {

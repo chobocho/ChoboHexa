@@ -40,8 +40,9 @@ public class PlayerAction implements IPlayerAction {
                 onKeyEvent(Player.RESUME);
                 player.startGame();
             } else if ((ex > 190) && (ey > 400)
-                    && (ex < 410) && (ey < 500)) {
+                    && (ex < 854) && (ey < 600)) {
                onKeyEvent(Player.RESUME);
+               player.startGame();
             }
             return true;
         }

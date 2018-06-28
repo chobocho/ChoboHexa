@@ -21,7 +21,8 @@ public class PlayerDraw implements IPlayerDraw {
     Bitmap mGameBack;
     Bitmap mGameStart;
     Bitmap mGameOver;
-    Bitmap mNumbers;
+    Bitmap mGameResume;
+
 
     Bitmap leftArrow;
     Bitmap rightArrow;
@@ -30,6 +31,7 @@ public class PlayerDraw implements IPlayerDraw {
     Bitmap rotateArrow;
     Bitmap playBtn;
     Bitmap pauseBtn;
+
 
     Bitmap[] blockImages = null;
 
@@ -68,6 +70,8 @@ public class PlayerDraw implements IPlayerDraw {
                 R.drawable.start);
         mGameOver = BitmapFactory.decodeResource(context.getResources(),
                 R.drawable.gameover);
+        mGameResume = BitmapFactory.decodeResource(context.getResources(),
+                R.drawable.resume);
 
         blockImages = new Bitmap[9];
 
@@ -217,7 +221,7 @@ public class PlayerDraw implements IPlayerDraw {
                             startX + BLOCK_IMAGE_SIZE * BOARD_WIDTH + 100 + 200,
                             startY + 200), null);
         } else if (hexa.isPauseState()) {
-            canvas.drawBitmap(mGameStart, 190, 400, null);
+            canvas.drawBitmap(mGameResume, 190, 400, null);
             canvas.drawBitmap(playBtn, null,
                     new Rect(startX + BLOCK_IMAGE_SIZE * BOARD_WIDTH + 100,
                             startY,
@@ -225,7 +229,7 @@ public class PlayerDraw implements IPlayerDraw {
                             startY + 200), null);
 
             mPaint.setTextSize(30);
-            canvas.drawText("[" + screen_width + "x" + screen_height + "]", 800, 1700, mPaint);
+            canvas.drawText("[" + screen_width + "x" + screen_height + "]", 800, 1950, mPaint);
         }
 
     }
