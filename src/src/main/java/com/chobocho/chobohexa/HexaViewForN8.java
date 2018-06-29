@@ -48,7 +48,7 @@ public class HexaViewForN8 extends View  {
 		playerAction.setPlayer(player);
 		playerDraw.setPlayer(player);
 
-		gameSpeed = 0;
+		gameSpeed = 800;
 	}
 
 	public void setScreenSize(int w, int h) {
@@ -90,7 +90,7 @@ public class HexaViewForN8 extends View  {
 			}
 			else if (player != null && player.isPlayState()) {
 				player.moveDown();
-				gameSpeed = 800 - (player.getScore() / 30000);
+				gameSpeed = 800 - (player.getScore() / 50000);
 				mHandler.sendEmptyMessageDelayed(0, gameSpeed);
 			}
 		}

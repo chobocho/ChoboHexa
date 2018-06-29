@@ -69,6 +69,12 @@ public class HexaBoard {
 
     public void addHexaBlock(HexaBlock hexaBlock) {
         int[] block = hexaBlock.getBlock();
+
+        if (block == null) {
+            HexaLog.e("addHexaBlock : hexaBlock is null");
+            return;
+        }
+
         int w = hexaBlock.getWidth();
         int h = hexaBlock.getHeight();
         int x = hexaBlock.getX();
