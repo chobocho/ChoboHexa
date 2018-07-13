@@ -29,4 +29,12 @@ public class MainActivity extends Activity {
             hexaViewForN8.pauseGame();
         }
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (hexaViewForN8 != null) {
+            hexaViewForN8.resumeGame();
+        }
+    }
 }

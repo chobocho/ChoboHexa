@@ -5,3 +5,4 @@
 Date      |Description                     |Memo
 ----------|--------------------------------|-----
 2018.06.27|Release first version           |
+2018.07.13|Add thread for animation        |

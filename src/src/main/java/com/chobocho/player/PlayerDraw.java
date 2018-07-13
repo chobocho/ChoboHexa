@@ -121,6 +121,7 @@ public class PlayerDraw implements IPlayerDraw {
         if (isLoadedImage == false) {
             return;
         }
+        HexaLog.v("onDraw");
         canvas.drawBitmap(mGameBack, null, new Rect(0, 0, screen_width, screen_height), null);
 
         int i = 0;

@@ -50,8 +50,8 @@ public class HexaBoard {
         int x = hexablock.getX();
         int y = hexablock.getY();
 
-        HexaLog.d("W : " + w + " H : " + h);
-        HexaLog.d("X : " + x + " Y : " + y);
+        HexaLog.v("W : " + w + " H : " + h);
+        HexaLog.v("X : " + x + " Y : " + y);
 
         for (int i = 0; i < h; i++) {
             for (int j = 0; j < w; j++) {
@@ -98,6 +98,14 @@ public class HexaBoard {
         }
 
         while (removeBlockList.size() >= 3) {
+            hexa.update();
+            HexaLog.d("Sleep");
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                HexaLog.e(e.toString());
+            }
+
             removedBlock += removeBlock();
             checkRemoveBlock();
         }
@@ -160,7 +168,7 @@ public class HexaBoard {
 
 
     private int checkRemoveBlock4Way(int x, int y) {
-        HexaLog.d("checkRemoveBlock X: " + x + " Y: " + y);
+        HexaLog.v("checkRemoveBlock4Way X: " + x + " Y: " + y);
 
         // O##
         if ((x+2) < this.width && board[y][x] == board[y][x+1] && board[y][x+1] == board[y][x+2]) {
@@ -197,7 +205,7 @@ public class HexaBoard {
         }
 
 
-        HexaLog.d("count : " + removeBlockList.size());
+        HexaLog.v("count : " + removeBlockList.size());
         return removeBlockList.size();
     }
 
