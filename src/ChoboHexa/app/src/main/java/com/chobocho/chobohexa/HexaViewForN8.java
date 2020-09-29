@@ -27,6 +27,7 @@ public class HexaViewForN8 extends View  {
 	IPlayer player;
 	IPlayerDraw playerDraw;
 	IPlayerAction playerAction;
+	BoardProfile boardProfile;
 
 	final int N8_width = 1080;
 	final int N8_height = 1920;
@@ -34,29 +35,28 @@ public class HexaViewForN8 extends View  {
 	final int PRESS_KEY = 1002;
 	final int BLOCK_DOWN = 1003;
 
-	private int screenWidth;
-	private int screenHeigth;
 	int gameSpeed;
     int highScore = 0;
 	HandlerThread mHandlerThread;
 	Handler mHexaHandler;
 
-	public HexaViewForN8(Context context) {
+	public HexaViewForN8(Context context, BoardProfile profile) {
 		super(context);
 		this.mContext = context;
+		boardProfile = profile;
+
 		loadScore();
 
         createHexaThread();
 
-		playerAction = new PlayerAction();
-		playerDraw = new PlayerDraw(mContext, N8_width, N8_height);
-		player = new Player(this, playerDraw, playerAction);
+		playerAction = new PlayerAction(boardProfile);
+		playerDraw = new PlayerDraw(mContext, boardProfile);
+		player = new Player(this, boardProfile, playerDraw, playerAction);
 		player.setHighScore(highScore);
 		playerAction.setPlayer(player);
 		playerDraw.setPlayer(player);
 
 		gameSpeed = 800;
-
 	}
 
 	private void createHexaThread() {
@@ -85,12 +85,6 @@ public class HexaViewForN8 extends View  {
             }
         };
     }
-
-	public void setScreenSize(int w, int h) {
-		this.screenWidth = w;
-		this.screenHeigth = h;
-		playerDraw.setScreenSize(this.screenWidth, this.screenHeigth);
-	}
 
 	public void onDraw(Canvas canvas) {
         if (player != null) {

@@ -1,15 +1,90 @@
 package com.chobocho.player;
 
+import android.graphics.Rect;
+
+import com.chobocho.chobohexa.BoardProfile;
+import com.chobocho.hexa.Hexa;
+
 public class PlayerAction implements IPlayerAction {
-   IPlayer player = null;
+    IPlayer player = null;
+    BoardProfile boardProfile;
+    final static int BOARD_WIDTH = 7;
+    final static int BOARD_HEIGHT = 16;
+
+    HexaButton bottomArrow;
+    HexaButton leftArrow;
+    HexaButton rightArrow;
+    HexaButton rotateArrow;
+    HexaButton downArrow;
+    HexaButton playArrow;
+    HexaButton pauseArrow;
+    HexaButton playButton;
+
+    public PlayerAction(BoardProfile profile) {
+        boardProfile = profile;
+        initButton();
+    }
+
+    private void initButton() {
+        int startX = boardProfile.startX;
+        int startY = boardProfile.startY;
+        int BLOCK_IMAGE_SIZE = boardProfile.blockSize();
+
+        bottomArrow = new HexaButton("bottom", 1,
+                (int) (startX + BLOCK_IMAGE_SIZE * 2.5),
+                (int)(startY + BLOCK_IMAGE_SIZE * (BOARD_HEIGHT + 1)),
+                (int)(BLOCK_IMAGE_SIZE*2.5),
+                (int)(BLOCK_IMAGE_SIZE*2.5));
+
+        leftArrow = new HexaButton("leftArrow", 2,
+                (int)(startX),
+                (int)(startY + BLOCK_IMAGE_SIZE * (BOARD_HEIGHT + 4.5)),
+                (int)(BLOCK_IMAGE_SIZE*2.5),
+                (int)(BLOCK_IMAGE_SIZE*2.5));
+
+        downArrow = new HexaButton("downArrow", 3,
+                (int)(startX + BLOCK_IMAGE_SIZE * 2.5),
+                (int)(startY + BLOCK_IMAGE_SIZE * (BOARD_HEIGHT + 4.5)),
+                (int)(BLOCK_IMAGE_SIZE*2.5),
+                (int)(BLOCK_IMAGE_SIZE*2.5));
+
+        rotateArrow = new HexaButton("rotatArrow", 4,
+                (int)(startX + BLOCK_IMAGE_SIZE * 5),
+                (int)(startY + BLOCK_IMAGE_SIZE * (BOARD_HEIGHT + 4.5)),
+                (int)(BLOCK_IMAGE_SIZE*2.5),
+                (int)(BLOCK_IMAGE_SIZE*2.5));
+
+        rightArrow = new HexaButton("RightArrow", 5,
+                (int)(startX + BLOCK_IMAGE_SIZE * 7.5),
+                (int)(startY + BLOCK_IMAGE_SIZE * (BOARD_HEIGHT + 4.5)),
+                (int)(BLOCK_IMAGE_SIZE*2.5),
+                (int)(BLOCK_IMAGE_SIZE*2.5));
+
+        playArrow = new HexaButton("playArrow", 6,
+                (int)(startX + BLOCK_IMAGE_SIZE * 7.5),
+                (int)(startY + BLOCK_IMAGE_SIZE * (BOARD_HEIGHT + 1)),
+                (int)(BLOCK_IMAGE_SIZE*2.5),
+                (int)(BLOCK_IMAGE_SIZE*2.5));
+
+        pauseArrow = new HexaButton("pauseArrow", 7,
+                (int)(startX + BLOCK_IMAGE_SIZE * 7.5),
+                (int)(startY + BLOCK_IMAGE_SIZE * (BOARD_HEIGHT + 1)),
+                (int)(BLOCK_IMAGE_SIZE*2.5),
+                (int)(BLOCK_IMAGE_SIZE*2.5));
+
+        playButton = new HexaButton("playButton", 8,
+                (int)(boardProfile.buttonStartX),
+                (int)(BLOCK_IMAGE_SIZE * 7),
+                (int)(BLOCK_IMAGE_SIZE * 6),
+                (int)(BLOCK_IMAGE_SIZE * 3));
+    }
 
     public boolean onTouchScreen(int ex, int ey) {
         int startX = 80;
         int startY = 80;
 
         if (player.isGameOverState()) {
-            if ((ex > 190) && (ey > 400)
-                    && (ex < 854) && (ey < 600)) {
+            if (playButton.in(ex, ey)) {
                 //if (highScore < player.getScore()) {
                 //    highScore = player.getScore();
                 //    saveScore();
@@ -20,13 +95,7 @@ public class PlayerAction implements IPlayerAction {
         }
 
         else if (player.isIdleState()) {
-            if ((ex > 190) && (ey > 400)
-                    && (ex < 854) && (ey < 600)) {
-                onKeyEvent(Player.START);
-                player.startGame();
-
-            } else if ((ex > 700) && (ey > 50)
-                    && (ey < 250)) {
+            if (playButton.in(ex, ey)) {
                 onKeyEvent(Player.START);
                 player.startGame();
             }
@@ -34,13 +103,10 @@ public class PlayerAction implements IPlayerAction {
         }
 
         else if (player.isPauseState()) {
-
-           if ((ex > 700) && (ey > 50)
-                    && (ey < 250)) {
+           if (playArrow.in(ex,ey)) {
                 onKeyEvent(Player.RESUME);
                 player.startGame();
-            } else if ((ex > 190) && (ey > 400)
-                    && (ex < 854) && (ey < 600)) {
+            } else if (playButton.in(ex, ey)) {
                onKeyEvent(Player.RESUME);
                player.startGame();
             }
@@ -48,27 +114,20 @@ public class PlayerAction implements IPlayerAction {
         }
 
         else if (player.isPlayState()) {
-            if ((ex > 700) && (ey > 50)
-                    && (ey < 250)) {
+            if (pauseArrow.in(ex,ey)) {
                 onKeyEvent(Player.PAUSE);
                 return true;
             }
         }
 
-        if (ex > startX &&
-                ey > startY + PlayerDraw.BLOCK_IMAGE_SIZE * Player.BOARD_HEIGHT + 100 &&
-                ex < startX + 200 &&
-                ey < startY + PlayerDraw.BLOCK_IMAGE_SIZE * Player.BOARD_HEIGHT + 100 + 200) {
+        if (leftArrow.in(ex, ey)) {
             if(player != null) {
                 onKeyEvent(Player.LEFT);
             }
             return true;
         }
 
-        else if (ex > startX + 250&&
-                ey > startY + PlayerDraw.BLOCK_IMAGE_SIZE * Player.BOARD_HEIGHT + 100 &&
-                ex < startX + 450 &&
-                ey < startY + PlayerDraw.BLOCK_IMAGE_SIZE * Player.BOARD_HEIGHT + 100 + 200) {
+        else if (bottomArrow.in(ex, ey)) {
             if (player != null) {
                 onKeyEvent(Player.BOTTOM);
                 onKeyEvent(Player.DOWN);
@@ -76,31 +135,21 @@ public class PlayerAction implements IPlayerAction {
             return true;
         }
 
-        else if (ex > startX + 500&&
-                ey > startY + PlayerDraw.BLOCK_IMAGE_SIZE * Player.BOARD_HEIGHT + 100 &&
-                ex < startX + 700 &&
-                ey < startY + PlayerDraw.BLOCK_IMAGE_SIZE * Player.BOARD_HEIGHT + 100 + 200) {
+        else if (rotateArrow.in(ex, ey)) {
             if (player != null) {
                 onKeyEvent(Player.ROTATE);
             }
             return true;
         }
 
-        else if (ex > startX + 750&&
-                ey > startY + PlayerDraw.BLOCK_IMAGE_SIZE * Player.BOARD_HEIGHT + 100 &&
-                ex < startX + 950 &&
-                ey < startY + PlayerDraw.BLOCK_IMAGE_SIZE * Player.BOARD_HEIGHT + 100 + 200) {
+        else if (rightArrow.in(ex, ey)) {
             if (player != null) {
-
                 onKeyEvent(Player.RIGHT);
             }
             return true;
         }
 
-        else if (ex > startX + 750&&
-                ey > startY + PlayerDraw.BLOCK_IMAGE_SIZE * Player.BOARD_HEIGHT - 200 &&
-                ex < startX + 950 &&
-                ey < startY + PlayerDraw.BLOCK_IMAGE_SIZE * Player.BOARD_HEIGHT) {
+        else if (downArrow.in(ex, ey)) {
             if (player != null) {
                 player.moveDown();
             }
@@ -110,10 +159,10 @@ public class PlayerAction implements IPlayerAction {
     }
 
     public boolean onKeyEvent(int keycode) {
-        System.out.println("Tetris (d) Player1 Press key : " + keycode);
+        System.out.println("Hexa (d) Player1 Press key : " + keycode);
 
         if (player == null) {
-            return false;
+            return true;
         }
 
         if (player.isIdleState()) {

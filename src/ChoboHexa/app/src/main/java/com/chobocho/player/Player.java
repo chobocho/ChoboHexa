@@ -1,7 +1,9 @@
 package com.chobocho.player;
 
 import android.graphics.Canvas;
+import android.graphics.Rect;
 
+import com.chobocho.chobohexa.BoardProfile;
 import com.chobocho.chobohexa.HexaViewForN8;
 import com.chobocho.hexa.Hexa;
 import com.chobocho.hexa.IHexa;
@@ -23,16 +25,17 @@ public class Player implements IPlayer,IHexaObserver {
 
     private int highScore = 0;
 
-
     IHexa hexa;
     IPlayerDraw playerDraw;
     IPlayerAction playerAction;
     HexaViewForN8 board;
+    BoardProfile boardProfile;
 
     private int     gameSpeed = 0;
 
-    public Player(HexaViewForN8 board, IPlayerDraw playerDraw, IPlayerAction playerAction) {
+    public Player(HexaViewForN8 board, BoardProfile profile, IPlayerDraw playerDraw, IPlayerAction playerAction) {
         this.board = board;
+        this.boardProfile = profile;
 
         this.hexa = new Hexa(BOARD_WIDTH, BOARD_HEIGHT);
         this.hexa.register(this);
@@ -47,6 +50,24 @@ public class Player implements IPlayer,IHexaObserver {
         this.highScore = 0;
     }
 
+    private void initButton() {
+        int startX = boardProfile.startX;
+        int startY = boardProfile.startY;
+        int BLOCK_IMAGE_SIZE = boardProfile.blockSize();
+
+        HexaButton leftArrow = new HexaButton("LeftArrow", 1,
+                (int) (startX + BLOCK_IMAGE_SIZE * 2.5),
+                (int)(startY + BLOCK_IMAGE_SIZE * (BOARD_HEIGHT + 1)),
+                (int)(BLOCK_IMAGE_SIZE*2.5),
+                (int)(BLOCK_IMAGE_SIZE*2.5));
+
+        HexaButton rightArrow = new HexaButton("RightArrow", 1,
+                (int) (startX + BLOCK_IMAGE_SIZE * 7.5),
+                (int)(startY + BLOCK_IMAGE_SIZE * (BOARD_HEIGHT + 4.5)),
+                (int)(BLOCK_IMAGE_SIZE*2.5),
+                (int)(BLOCK_IMAGE_SIZE*2.5));
+
+    }
     public void onDraw(Canvas g) {
         playerDraw.onDraw(g);
     }

@@ -7,6 +7,7 @@ import android.util.Log;
 public class MainActivity extends Activity {
 
     HexaViewForN8 hexaViewForN8;
+    BoardProfile boardProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,8 +18,9 @@ public class MainActivity extends Activity {
 
         Log.e("Hexa", "W" + screenWidth + " H" + screenHeight);
 
-        hexaViewForN8 = new HexaViewForN8(this);
-        hexaViewForN8.setScreenSize(screenWidth,screenHeight);
+        boardProfile = new BoardProfile(screenWidth, screenHeight);
+
+        hexaViewForN8 = new HexaViewForN8(this, boardProfile);
         setContentView(hexaViewForN8);
     }
 

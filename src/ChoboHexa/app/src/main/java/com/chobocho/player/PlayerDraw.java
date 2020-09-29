@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.Log;
 
+import com.chobocho.chobohexa.BoardProfile;
 import com.chobocho.chobohexa.R;
 import com.chobocho.hexa.*;
 
@@ -17,6 +18,7 @@ import com.chobocho.hexa.*;
 public class PlayerDraw implements IPlayerDraw {
     IHexa hexa;
     IPlayer player;
+    BoardProfile boardProfile;
 
     Bitmap mGameBack;
     Bitmap mGameStart;
@@ -41,20 +43,25 @@ public class PlayerDraw implements IPlayerDraw {
 
     int screen_width = 0;
     int screen_height = 0;
+    int block_size = 0;
 
     boolean isLoadedImage = false;
 
-    public static final int BLOCK_IMAGE_SIZE = 94;
+    public static int BLOCK_IMAGE_SIZE = 80;
     int BOARD_WIDTH = 7;
     int BOARD_HEIGHT = 16;
 
-    public PlayerDraw (Context context, int screen_width, int screen_height) {
+    public PlayerDraw (Context context, BoardProfile boardProfile) {
         this.context = context;
         this.player = player;
-        this.screen_width = screen_width;
-        this.screen_height = screen_height;
+        this.boardProfile = boardProfile;
+        this.screen_width = boardProfile.screenWidth();
+        this.screen_height = boardProfile.screenHeight();
+        this.block_size = boardProfile.blockSize();
+        this.BLOCK_IMAGE_SIZE = boardProfile.blockSize();
 
         loadImage();
+        initButtons();
 
         mPaint = new Paint();
         mPaint.setColor(Color.BLUE);
@@ -102,6 +109,10 @@ public class PlayerDraw implements IPlayerDraw {
         isLoadedImage = true;
     }
 
+    private void initButtons() {
+
+    }
+
     public void setHexa(IHexa hexa) {
         this.hexa = hexa;
         BOARD_WIDTH = hexa.getWidth();
@@ -110,11 +121,6 @@ public class PlayerDraw implements IPlayerDraw {
 
     public void setPlayer(IPlayer player) {
         this.player = player;
-    }
-
-    public void setScreenSize(int w, int h) {
-        this.screen_width = w;
-        this.screen_height = h;
     }
 
     public void onDraw(Canvas canvas) {
@@ -127,8 +133,8 @@ public class PlayerDraw implements IPlayerDraw {
         int i = 0;
         int j = 0;
         String str_gameState = "";
-        int startX = 80;
-        int startY = 80;
+        int startX = boardProfile.startX;
+        int startY = boardProfile.startY;
 
         int width = hexa.getWidth();
         int height = hexa.getHeight();
@@ -158,81 +164,80 @@ public class PlayerDraw implements IPlayerDraw {
             }
         }
 
-        mPaint.setTextSize(60);
-        canvas.drawText("Score", 760, 760, mPaint);
-        canvas.drawText(Integer.toString(hexa.getScore()), 760, 820, mPaint);
+        mPaint.setTextSize(BLOCK_IMAGE_SIZE);
+        canvas.drawText("Score", startX + (BOARD_WIDTH+1)*BLOCK_IMAGE_SIZE, startY + (BOARD_HEIGHT-2)*BLOCK_IMAGE_SIZE, mPaint);
+        mPaint.setTextSize((int)(BLOCK_IMAGE_SIZE * 0.8));
+        canvas.drawText(Integer.toString(hexa.getScore()),startX + (BOARD_WIDTH+1)*BLOCK_IMAGE_SIZE, startY + (BOARD_HEIGHT-1)*BLOCK_IMAGE_SIZE, mPaint);
+        mPaint.setTextSize(BLOCK_IMAGE_SIZE);
+        canvas.drawText("High", startX + (BOARD_WIDTH+1)*BLOCK_IMAGE_SIZE, startY + (BOARD_HEIGHT-4)*BLOCK_IMAGE_SIZE, mPaint);
+        mPaint.setTextSize((int)(BLOCK_IMAGE_SIZE * 0.8));
+        canvas.drawText(Integer.toString(player.getHighScore()), startX + (BOARD_WIDTH+1)*BLOCK_IMAGE_SIZE, startY + (BOARD_HEIGHT-3)*BLOCK_IMAGE_SIZE, mPaint);
 
-        canvas.drawText("High Score", 760, 940, mPaint);
-        canvas.drawText(Integer.toString(player.getHighScore()), 760, 1000, mPaint);
+        canvas.drawBitmap(bottomArrow, null,
+                new Rect((int) (startX + BLOCK_IMAGE_SIZE * 2.5),
+                        (int)(startY + BLOCK_IMAGE_SIZE * (BOARD_HEIGHT + 1)),
+                        startX + BLOCK_IMAGE_SIZE * 5,
+                        (int) (startY + BLOCK_IMAGE_SIZE * (BOARD_HEIGHT + 3.5))), null);
 
         canvas.drawBitmap(leftArrow, null,
                 new Rect(startX,
-                        startY + BLOCK_IMAGE_SIZE * BOARD_HEIGHT + 100,
-                        startX + 200,
-                        startY + BLOCK_IMAGE_SIZE * BOARD_HEIGHT + 100 + 200), null);
-        canvas.drawBitmap(bottomArrow, null,
-                new Rect(startX + 250,
-                        startY + BLOCK_IMAGE_SIZE * BOARD_HEIGHT + 100,
-                        startX + 450,
-                        startY + BLOCK_IMAGE_SIZE * BOARD_HEIGHT + 100 + 200), null);
-        canvas.drawBitmap(rotateArrow, null,
-                new Rect(startX + 500,
-                        startY + BLOCK_IMAGE_SIZE * BOARD_HEIGHT + 100,
-                        startX + 700,
-                        startY + BLOCK_IMAGE_SIZE * BOARD_HEIGHT + 100 + 200), null);
-        canvas.drawBitmap(rightArrow, null,
-                new Rect(startX + 750,
-                        startY + BLOCK_IMAGE_SIZE * BOARD_HEIGHT + 100,
-                        startX + 950,
-                        startY + BLOCK_IMAGE_SIZE * BOARD_HEIGHT + 100 + 200), null);
+                        (int) (startY + BLOCK_IMAGE_SIZE * (BOARD_HEIGHT + 4.5)),
+                        (int) (startX + BLOCK_IMAGE_SIZE * 2.5),
+                        (int) (startY + BLOCK_IMAGE_SIZE * (BOARD_HEIGHT + 7))), null);
 
         canvas.drawBitmap(downArrow, null,
-                new Rect(startX + 750,
-                        startY + BLOCK_IMAGE_SIZE * BOARD_HEIGHT - 200,
-                        startX + 950,
-                        startY + BLOCK_IMAGE_SIZE * BOARD_HEIGHT), null);
+                new Rect((int) (startX + BLOCK_IMAGE_SIZE * 2.5),
+                        (int)(startY + BLOCK_IMAGE_SIZE * (BOARD_HEIGHT + 4.5)),
+                        startX + BLOCK_IMAGE_SIZE * 5,
+                        (int) (startY + BLOCK_IMAGE_SIZE * (BOARD_HEIGHT + 7))), null);
+
+        canvas.drawBitmap(rotateArrow, null,
+                new Rect(startX + BLOCK_IMAGE_SIZE * 5,
+                        (int) (startY + BLOCK_IMAGE_SIZE * (BOARD_HEIGHT + 4.5)),
+                        (int) (startX + BLOCK_IMAGE_SIZE * 7.5),
+                        (int) (startY + BLOCK_IMAGE_SIZE * (BOARD_HEIGHT + 7))), null);
+
+        canvas.drawBitmap(rightArrow, null,
+                new Rect((int) (startX + BLOCK_IMAGE_SIZE * 7.5),
+                        (int) (startY + BLOCK_IMAGE_SIZE * (BOARD_HEIGHT + 4.5)),
+                        startX + BLOCK_IMAGE_SIZE * 10,
+                        (int) (startY + BLOCK_IMAGE_SIZE * (BOARD_HEIGHT + 7))), null);
 
         if (hexa == null) {
             Log.d("Hexa", "Hexa is null");
             return;
         }
         if (hexa.isIdleState()) {
-            canvas.drawBitmap(mGameStart, 190, 400, null);
-
-            canvas.drawBitmap(playBtn, null,
-                    new Rect(startX + BLOCK_IMAGE_SIZE * BOARD_WIDTH + 100,
-                            startY,
-                            startX + BLOCK_IMAGE_SIZE * BOARD_WIDTH + 100 + 200,
-                            startY + 200), null);
+            canvas.drawBitmap(mGameStart, null,
+                    new Rect(boardProfile.buttonStartX, block_size*7, boardProfile.buttonStartX + block_size*6, block_size*10), null);
         } else if (hexa.isGameOverState()) {
-            canvas.drawBitmap(mGameOver, 190, 400, null);
+            canvas.drawBitmap(mGameOver, null,
+                    new Rect(boardProfile.buttonStartX, block_size*7, boardProfile.buttonStartX + block_size*6, block_size*10), null);
         } else if (hexa.isPlayState()) {
+            canvas.drawBitmap(pauseBtn, null,
+                    new Rect((int) (startX + BLOCK_IMAGE_SIZE * 7.5),
+                            (int) (startY + BLOCK_IMAGE_SIZE * (BOARD_HEIGHT + 1)),
+                            startX + BLOCK_IMAGE_SIZE * 10,
+                            (int) (startY + BLOCK_IMAGE_SIZE * (BOARD_HEIGHT + 3.5))), null);
 
             HexaBlock block = hexa.getCurrentBlock();
             onDrawBlock(canvas, block, startX, startY);
 
             HexaBlock nextHexaBlock = hexa.getNextBlock();
-            int nStartX = 600;
-            int nStartY = startY + 3 * BLOCK_IMAGE_SIZE;
+            int nStartX = startX + (BOARD_WIDTH-2) * BLOCK_IMAGE_SIZE;
+            int nStartY = startY;
             onDrawBlock(canvas, nextHexaBlock, nStartX, nStartY);
-
-            canvas.drawBitmap(pauseBtn, null,
-                    new Rect(startX + BLOCK_IMAGE_SIZE * BOARD_WIDTH + 100,
-                            startY,
-                            startX + BLOCK_IMAGE_SIZE * BOARD_WIDTH + 100 + 200,
-                            startY + 200), null);
         } else if (hexa.isPauseState()) {
-            canvas.drawBitmap(mGameResume, 190, 400, null);
+            canvas.drawBitmap(mGameResume, null,
+                    new Rect(boardProfile.buttonStartX, block_size*7, boardProfile.buttonStartX + block_size*6, block_size*10), null);
             canvas.drawBitmap(playBtn, null,
-                    new Rect(startX + BLOCK_IMAGE_SIZE * BOARD_WIDTH + 100,
-                            startY,
-                            startX + BLOCK_IMAGE_SIZE * BOARD_WIDTH + 100 + 200,
-                            startY + 200), null);
-
-            mPaint.setTextSize(30);
-            canvas.drawText("[" + screen_width + "x" + screen_height + "]", 800, 1950, mPaint);
+                    new Rect((int) (startX + BLOCK_IMAGE_SIZE * 7.5),
+                            (int) (startY + BLOCK_IMAGE_SIZE * (BOARD_HEIGHT + 1)),
+                            startX + BLOCK_IMAGE_SIZE * 10,
+                            (int) (startY + BLOCK_IMAGE_SIZE * (BOARD_HEIGHT + 3.5))), null);
+            mPaint.setTextSize((int)(BLOCK_IMAGE_SIZE * 0.5));
+            canvas.drawText("[" + screen_width + "x" + screen_height + "]", startX, (int)(startY + BLOCK_IMAGE_SIZE * (BOARD_HEIGHT + 8)), mPaint);
         }
-
     }
 
     public void onDrawBlock(Canvas canvas, HexaBlock block, int startX, int startY) {
